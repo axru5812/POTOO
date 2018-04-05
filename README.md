@@ -1,4 +1,6 @@
 # POTOO
+![Potoo logo](https://github.com/axru5812/POTOO/blob/master/POTOO_big_logo.png)
+
 **Properties of line Transitions in non-Ordinary Objects**
 
 **A project investigating the balmer line transitions looking for potential non-caseB galaxies in the SDSS**
