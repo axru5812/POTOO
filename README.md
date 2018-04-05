@@ -1,7 +1,9 @@
 # POTOO
-# Properties of line Transitions in non-Ordinary Objects
-** A project investigating the balmer line transitions looking for potential non-caseB galaxies in the SDSS **
----
+**Properties of line Transitions in non-Ordinary Objects**
+
+**A project investigating the balmer line transitions looking for potential non-caseB galaxies in the SDSS**
+
+-------------------------------------------------------------------------------
 
 ## INVESTIGATING UNPHYSICAL Ha/Hb RATIOS
 
