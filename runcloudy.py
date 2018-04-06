@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 #                  RUN TEST SETUP OF CLOUDY MODELS
 # =============================================================================
 def testCloudy():
-    dir_ = './'
+    dir_ = './cloudy_cache/'
     # Define some parameters of the model:
     model_name = 'model_1'
     full_model_name = '{0}{1}'.format(dir_, model_name)
