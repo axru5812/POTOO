@@ -1,15 +1,16 @@
-import SDSSmanagement as sdss
 import pandas as pd
 import numpy as np
-from astropy import coordinates as coords
-from astropy import units as u
-from astropy import table
-from astropy.io import ascii as save_asc
 import glob
 import pickle
+import sklearn
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.externals import joblib
+from sklearn.model_selection import KFold
+from os.path import isfile
 
 
-def construct_training_set(data_dir, save_file):
+def compile_training_set(data_dir, save_file_int, save_file_class,
+                         clobber=False, linelist='./data/linelabels'):
     """
     Constructs a data-frame containing the line flux values. The resulting DF
     is then saved as a pickle. The same is done with the class values
@@ -18,16 +19,121 @@ def construct_training_set(data_dir, save_file):
     ----------
     data_dir : str
         Directory from which to fetch the cloudy savefiles
-    save_file : str
+    save_file_int : str
         Name of the file to which to save the pickled dataframe
+    save_file_class : str
+        Name of the file to which to save the classlabel dataframe
+    linelist : str
+        Path to the list containing the linelabels. Defaults to
+        './data/linelabels'
     """
-    # Get filenames
-    flist = glob.glob('cloudy/**/*')
-    for f in flist:
-        data = pickle.load(f)
-        f.
+    done = isfile(save_file_int) and isfile(save_file_int) and clobber is False
+    if done:
+        print('Dataset already compiled')
+        return
 
-def save_trained_model(model, file_name):
+    # Get filenames
+    flist = glob.glob(data_dir + '**/*.pkl')
+    linenames = []
+    with open(linelist, 'r') as f:
+        lin = f.readlines()
+        for l in lin:
+            linenames.append(l.split('\n')[0])
+
+    linedata = []
+    classes = []
+    for f in flist:
+        print(f)
+        data = pickle.load(open(f, 'rb'))
+        lines = data['intensities']
+        class_ = data['class']
+        classes.append(class_)
+        intensity = []
+        for line_name in linenames:
+            inten = lines[line_name]
+            intensity.append(inten)
+        linedata.append(intensity)
+
+    result = pd.DataFrame(columns=linenames, data=linedata)
+    response = pd.DataFrame()
+    response['class'] = classes
+
+    # Pickle the results
+    result.to_pickle(save_file_int)
+    response.to_pickle(save_file_class)
+
+
+def add_noise(data, level=0.1):
+    """
+    """
+
+
+def load_data(x_file, y_file, standardize=True,
+              standardizer_file='./data/standardizer.pkl'):
+    """
+    Loads and returns the data. If standardize is True (default) it
+    standardizes the data and persists the standard scaler object for use on
+    the actual dataset
+
+    Parameters
+    ----------
+    x_file : str
+        Name of the pickle containing the training data set.
+    y_file : str
+        Name of the pickle containing the training classes.
+    standardize : bool
+        Whether or not to standardize the data
+    standardizer_file : str
+        Name of file in which to persist the data
+
+    Returns
+    -------
+    x_df : pandas.DataFrame
+        training data set
+    y_df : pandas.DataFrame
+        training classes
+    """
+    x_df = pd.read_pickle(x_file)
+    y_df = pd.read_pickle(y_file)
+    if standardize:
+        scaler = sklearn.preprocessing.StandardScaler()
+        fit_scaler = scaler.fit(x_df)
+        scaled_x_data = fit_scaler.transform(x_df)
+        x_df_new = pd.DataFrame(columns=x_df.columns, data=scaled_x_data)
+
+        # Persist the standardizer
+        joblib.dump(fit_scaler, standardizer_file)
+        return x_df_new, y_df
+    return x_df, y_df
+
+
+def train_model(data, response, model=None):
+    """
+    Trains the selected model on the full data set
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Dataframe with all the measured line fluxes from CLoudy
+    response : pandas.DataFrame
+        Classes from Cloudy column density
+    model : sklearn model object, optional
+        An instance of an sklearn classifier. If not specified the function
+        defaults to an AdaBoostClassifier
+
+    Returns
+    -------
+    model : sklearn model object
+        Returns the trained model
+    """
+    if model is None:
+        model = AdaBoostClassifier()
+    resp = response.values.ravel()
+    fitted_model = model.fit(data, resp)
+    return fitted_model
+
+
+def save_trained_model(model, filename):
     """
     Pickles the trained model
 
@@ -38,30 +144,22 @@ def save_trained_model(model, file_name):
     file_name : str
         Name of the file to which to save the pickled model
     """
-    pass
+    joblib.dump(model, filename)
 
 
-def train_model(model, data, response):
-    """
-    Trains the selected model on the full data set
-
-    Parameters
-    ----------
-    model : sklearn model object
-        eg. sklean.linear_model.linearRegression or similar
-    data : pandas.DataFrame
-        Dataframe with all the measured line fluxes from CLoudy
-    response : pandas.DataFrame
-        Classes from Cloudy column density
-
-    Returns
-    -------
-    model : sklearn model object
-        Returns the trained model
-    """
-
-def cross_validate(model, data, response):
+def cross_validate(data, response, model=None):
     """
     Run a k-fold cross validation on the model to assess predictive ability.
-
     """
+    data = data.copy().values
+    resp = response.copy().values
+
+    if model is None:
+        model = AdaBoostClassifier()
+    # Set up Kfold
+    kf = KFold(n_splits=5)
+    scores = []
+    for train, test in kf.split(data):
+        model.fit(data[train], resp[train].ravel())
+        scores.append(model.score(data[test], resp[test].ravel()))
+    return scores, np.array(scores).mean()

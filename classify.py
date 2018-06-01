@@ -1,13 +1,19 @@
-import SDSSmanagement as sdss
 import pandas as pd
 import numpy as np
-from astropy import coordinates as coords
-from astropy import units as u
-from astropy import table
-from astropy.io import ascii as save_asc
+import ClassificationFunctions as c
 
 
 def main():
+    print('Compiling the data')
+    c.compile_data_set()
+    print('Loading datafiles into memory')
+    data = c.load_data()
+    print('Loading the trained model')
+    model = c.load_model('./data/trained_model.pkl')
+    print('Classifying the galaxies')
+    classes, classA_galaxies, percent = c.classify(model, data)
+    print('\tPercentage of case A galaxies: ', percent)
+
 
 if __name__ == '__main__':
     main()
