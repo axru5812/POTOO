@@ -56,8 +56,7 @@ def make_SDSS_idlist(filename, clobber=False, verbose=True):
     else:
         query = ''' SELECT s.ra, s.dec, s.mjd, s.plate, s.fiberID
                     FROM SpecObjAll AS s
-                    WHERE s.class='GALAXY'
-
+                    WHERE s.class='GALAXY' AND s.subclass='STARBURST'
                 '''
         res = SDSS.query_sql(query, data_release=12)
         if verbose:
