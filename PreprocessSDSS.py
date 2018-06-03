@@ -1,3 +1,15 @@
+"""
+Script that coordinates the download of data from the sdss database.
+The steps performed are:
+
+1. Construction of a list of SDSS id's
+2. Multiprocessed download of the spectra 10 at a time (saved in ./temp/)
+3. Remove continuum from the data (median filtering)
+4. Measure the lines as 40 Å narrowband fluxes
+5. Save the results as pickled dataframes in ./data/lines/
+
+"""
+
 import SDSSmanagement as sdss
 import pandas as pd
 import numpy as np
