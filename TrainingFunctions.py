@@ -63,10 +63,51 @@ def compile_training_set(data_dir, save_file_int, save_file_class,
     response.to_pickle(save_file_class)
 
 
-def add_noise(data, level=0.1):
+def add_noise(datafile, responsefile, overwrite=True, save_x=None,
+              save_y=None):
     """
-    """
+    Adds a gaussian noise component to the cloudy modelruns, effectively
+    doubling the training set. Saves the resulting dfs as pickles
 
+    Parameters
+    ----------
+    datafile : str
+        file containing the main dataset pickle
+    responsefile : str
+        file containing the y classes
+    overwrite : bool
+        whether to overwrite the old files
+    save_x : str
+        If overwrite is false, this specifies the savelocation of the data
+    save_y : str
+        If overwrite is false, this specifies the savelocation of the responses
+
+    """
+    x_df = pd.read_pickle(datafile)
+    y_df = pd.read_pickle(responsefile)
+    second_y = y_df.copy()
+    x_noise = x_df.apply(_add_single_noise)
+
+    y_long = y_df.append(y_df).reset_index(drop=True)
+    x_long = x_df.append(x_noise).reset_index(drop=True)
+
+    if overwrite:
+        x_long.to_pickle(datafile)
+        y_long.to_pickle(responsefile)
+    else:
+        if save_x is not None:
+            x_long.to_pickle(save_x)
+        if save_y is not None:
+            y_long.to_pickle(save_y)
+
+
+def _add_single_noise(value):
+    """
+    Adds 10 percent gaussian noise to a number. Utility function for use in
+    add_noise
+    """
+    number = np.random.normal(scale=0.1 * np.abs(value))
+    return value + number
 
 def load_data(x_file, y_file, standardize=True,
               standardizer_file='./data/standardizer.pkl'):
