@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SDSSmanagement &mdash; POTOO 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TrainingFunctions" href="Training.html" />
+    <link rel="prev" title="Welcome to POTOO’s documentation!" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> POTOO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">SDSSmanagement</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Training.html"><code class="docutils literal"><span class="pre">TrainingFunctions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Classification.html"><code class="docutils literal"><span class="pre">ClassificationFunctions</span></code></a></li>
+</ul>
+<p class="caption"><span class="caption-text">Scripts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="SDSSscript.html"><code class="docutils literal"><span class="pre">PreprocessSDSS</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainingscript.html"><code class="docutils literal"><span class="pre">train</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Classificationscript.html"><code class="docutils literal"><span class="pre">classify</span></code></a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">POTOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li><code class="docutils literal"><span class="pre">SDSSmanagement</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/SDSS.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sdssmanagement">
+<h1><code class="xref py py-mod docutils literal"><span class="pre">SDSSmanagement</span></code><a class="headerlink" href="#sdssmanagement" title="Permalink to this headline">¶</a></h1>
+<p>Module containing functions that deal with getting and processing the SDSS spectra.</p>
+<span class="target" id="module-SDSSmanagement"></span><dl class="function">
+<dt id="SDSSmanagement.chunk_table">
+<code class="descclassname">SDSSmanagement.</code><code class="descname">chunk_table</code><span class="sig-paren">(</span><em>table</em>, <em>chunksize=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SDSSmanagement.html#chunk_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SDSSmanagement.chunk_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Separates the table into multiprocessing chunks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<em>astropy.table</em>) &#8211; Full table object</li>
+<li><strong>chunksize</strong> (<em>int</em><em>, </em><em>optional</em>) &#8211; Default size of chunks is 10</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="SDSSmanagement.download_spectra">
+<code class="descclassname">SDSSmanagement.</code><code class="descname">download_spectra</code><span class="sig-paren">(</span><em>table</em>, <em>data_dir</em>, <em>save_raw=True</em>, <em>raw_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SDSSmanagement.html#download_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SDSSmanagement.download_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads SDSS spectra</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> (<em>AstroPy.Table</em>) &#8211; Table with coordinates</li>
+<li><strong>data_dir</strong> (<em>str</em>) &#8211; Specifies directory where the data is saved</li>
+<li><strong>save_raw</strong> (<em>bool</em>) &#8211; Specifies whether the raw spectra (i.e. sdss fits) should be saved</li>
+<li><strong>raw_dir</strong> (<em>str</em><em>, </em><em>optional</em>) &#8211; Specifies save directory for the raw spectra. If raw_dir=None and
+save_raw is True it defaults to data_dir</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>spectra</strong> (<em>list</em>) &#8211; List of HDU objects</li>
+<li><strong>filenames</strong> (<em>list</em>) &#8211; List of filenames to be used when saving linemeasurements</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="SDSSmanagement.load_table">
+<code class="descclassname">SDSSmanagement.</code><code class="descname">load_table</code><span class="sig-paren">(</span><em>listname</em>, <em>length=10</em>, <em>all=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SDSSmanagement.html#load_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SDSSmanagement.load_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a section of the SDSS id list and removes it from the coordinate list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>listname</strong> (<em>str</em>) &#8211; Name of the file to load from</li>
+<li><strong>length</strong> (<em>int</em>) &#8211; Length of chunk to return</li>
+<li><strong>all</strong> (<em>bool</em>) &#8211; If true returns the full list</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>table</strong> (<em>pandas.DataFrame</em>) &#8211; DataFrame with the information needed by SDSS.get_spectra.</li>
+<li><strong>remaining</strong> (<em>int</em>) &#8211; Remaining rows in list</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="SDSSmanagement.make_SDSS_idlist">
+<code class="descclassname">SDSSmanagement.</code><code class="descname">make_SDSS_idlist</code><span class="sig-paren">(</span><em>filename</em>, <em>clobber=False</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SDSSmanagement.html#make_SDSS_idlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SDSSmanagement.make_SDSS_idlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a master file with quantities that provide unique identification in
+the SDSS: ra, dec, mjd, plate number, and fiber ID.
+The spectra are selected to be galaxies and classified as starbursts
+=&gt; EW(Ha) &gt; 50 Å.
+This can then be used to get the corresponding spectra in chunks at a
+later stage.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<em>str</em>) &#8211; Name of the savefile</li>
+<li><strong>clobber</strong> (<em>bool</em>) &#8211; Whether to remake the list file</li>
+<li><strong>verbose</strong> (<em>bool</em>) &#8211; Sets print level.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Saves a list of interesting SDSS id&#8217;s for all galaxies with spectra</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="SDSSmanagement.measure_lines">
+<code class="descclassname">SDSSmanagement.</code><code class="descname">measure_lines</code><span class="sig-paren">(</span><em>wl</em>, <em>flux</em>, <em>linelist</em>, <em>method='narrowband'</em>, <em>width=40</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SDSSmanagement.html#measure_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SDSSmanagement.measure_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Measures a set of emission lines to get fluxes that can be compared to
+cloudy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wl</strong> (<em>ndarray</em>) &#8211; Array of wavelengths in Ångström</li>
+<li><strong>flux</strong> (<em>ndarray</em>) &#8211; Continuum_subtracted flux. Array of same length as wavelength.
+Units should be erg/s/Å</li>
+<li><strong>linelist</strong> (<em>str</em>) &#8211; List with line names and wavelengths. Tab separated</li>
+<li><strong>method</strong> (<em>{'narrowband'</em><em>, </em><em>'gaussian'}</em>) &#8211; Selects the fitting method. Narrowband integrates the continuum
+subtracted spectrum over a small box around each line to get the line
+flux. Gaussian fits a set of gaussians to all the requested lines</li>
+<li><strong>width</strong> (<em>int</em>) &#8211; Width of the narrowband.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>results</strong> &#8211; Dataframe with two columns: &#8216;name&#8217;, and &#8216;flux&#8217; as measured from the
+spectrum</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pandas.DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="SDSSmanagement.normalize">
+<code class="descclassname">SDSSmanagement.</code><code class="descname">normalize</code><span class="sig-paren">(</span><em>wavelength</em>, <em>flux</em>, <em>kernel=51</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SDSSmanagement.html#normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SDSSmanagement.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that normalizes the input spectrum using median filtering</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wavelength</strong> (<em>ndarray</em>) &#8211; Array of wavelengths in Ångström</li>
+<li><strong>flux</strong> (<em>ndarray</em>) &#8211; Array of same length as wavelength. Units should be erg/s/Å</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>normalized_flux</strong> &#8211; Normalized flux array</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="SDSSmanagement.process_spectra">
+<code class="descclassname">SDSSmanagement.</code><code class="descname">process_spectra</code><span class="sig-paren">(</span><em>spectra</em>, <em>save_res=True</em>, <em>save_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SDSSmanagement.html#process_spectra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SDSSmanagement.process_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates the measuring of lines and removal of continuum from sdss
+spectra. The steps that are performed are:</p>
+<ul class="simple">
+<li>Unpacking the spectrum</li>
+<li>Redshifting</li>
+<li>Continuum subtraction</li>
+<li>Line measuring</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>spectra</strong> (<em>list</em>) &#8211; List of HDU objects conforming to the SDSS standard</li>
+<li><strong>save_res</strong> (<em>bool</em>) &#8211; Whether or not to save the individual dataframes</li>
+<li><strong>save_dir</strong> (<em>str</em>) &#8211; Filenames where the dataframe pickles will be saved</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>objects</strong> &#8211; List of dataframes with measured line fluxes</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="SDSSmanagement.unpack_spectrum">
+<code class="descclassname">SDSSmanagement.</code><code class="descname">unpack_spectrum</code><span class="sig-paren">(</span><em>HDU_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SDSSmanagement.html#unpack_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SDSSmanagement.unpack_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpacks and extracts the relevant parts of an SDSS HDU list object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>HDU_list</strong> (<em>astropy HDUlist object</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>wavelengths</strong> (<em>ndarray</em>) &#8211; Wavelength array</li>
+<li><strong>flux</strong> (<em>ndarray</em>) &#8211; Flux array</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; Redshift of the galaxy</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Training.html" class="btn btn-neutral float-right" title="TrainingFunctions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to POTOO’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Axel Runnholm.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

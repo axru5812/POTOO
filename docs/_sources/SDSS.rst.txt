@@ -1,0 +1,12 @@
+
+*********************
+:mod:`SDSSmanagement`
+*********************
+
+Module containing functions that deal with getting and processing the SDSS spectra.
+
+.. automodule:: SDSSmanagement
+    :members:
+    :private-members:
+    :special-members:
+

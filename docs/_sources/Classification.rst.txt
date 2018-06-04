@@ -1,0 +1,13 @@
+
+******************************
+:mod:`ClassificationFunctions`
+******************************
+
+Functions related to the process of classifying the SDSS spectra
+
+
+.. automodule:: ClassificationFunctions
+    :members:
+    :private-members:
+    :special-members:
+

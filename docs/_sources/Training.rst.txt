@@ -1,0 +1,12 @@
+
+************************
+:mod:`TrainingFunctions`
+************************
+
+Module with functions related to training the sklearn ML model.
+
+.. automodule:: TrainingFunctions
+    :members:
+    :private-members:
+    :special-members:
+

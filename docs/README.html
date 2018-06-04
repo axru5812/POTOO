@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Investigating unphysical Ha/Hb ratios &mdash; POTOO 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> POTOO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="SDSS.html"><code class="docutils literal"><span class="pre">SDSSmanagement</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Training.html"><code class="docutils literal"><span class="pre">TrainingFunctions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Classification.html"><code class="docutils literal"><span class="pre">ClassificationFunctions</span></code></a></li>
+</ul>
+<p class="caption"><span class="caption-text">Scripts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="SDSSscript.html"><code class="docutils literal"><span class="pre">PreprocessSDSS</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainingscript.html"><code class="docutils literal"><span class="pre">train</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Classificationscript.html"><code class="docutils literal"><span class="pre">classify</span></code></a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">POTOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Investigating unphysical Ha/Hb ratios</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <a class="reference external image-reference" href="../POTOO/POTOO_big_logo.png"><img alt="Potoo logo" src="_images/POTOO_big_logo.png" /></a>
+<p><strong>Properties of line Transitions in non-Ordinary Objects</strong></p>
+<p><strong>A project investigating the balmer line transitions looking for potential non-caseB galaxies in the SDSS</strong></p>
+<hr class="docutils" />
+<div class="section" id="investigating-unphysical-ha-hb-ratios">
+<h1>Investigating unphysical Ha/Hb ratios<a class="headerlink" href="#investigating-unphysical-ha-hb-ratios" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-motivation">
+<h2>General motivation<a class="headerlink" href="#general-motivation" title="Permalink to this headline">¶</a></h2>
+<p>Many galaxies in the SDSS shows ratios of Ha to Hb that are below the 2.86 ratio that is predicted from the CaseB recombination scenario.</p>
+<p>Most likely the vast majority of these low ab-ratios are caused by measurement errors but there is a possibility that some of the measurements are actually reflecting the true physical ratios in the galaxies.</p>
+<p>The main point of this project is to try to establish a sample of galaxies that have true HaHb-ratios below 2.86 using a machine learning approach to deal with the large data volume.</p>
+</div>
+<div class="section" id="project-outline">
+<h2>Project outline<a class="headerlink" href="#project-outline" title="Permalink to this headline">¶</a></h2>
+<p>c.f. GAME Paper (Ucci+18)</p>
+<ol class="arabic simple">
+<li>Create a library of spectra that fall in case A vs case B classes with varying other parameters.</li>
+<li>Train a classification algorithm on the two labels</li>
+<li>Use cross validation to characterize model performance</li>
+<li>Run the classification algorithm on all SDSS emission line galaxy spectra. This will probably yield a reasonably good preselection of galaxies that are likely to have anomalous line ratios</li>
+<li>Test the Balmer line shapes for gaussianity to remove any that have high probability of being anomalous due to faulty observations</li>
+<li>Also a signal to noise cut should probably be applied</li>
+<li>Calculate the implied optical depths, region sizes and other interesting physical parameters of the galaxy.</li>
+</ol>
+</div>
+<div class="section" id="outstanding-questions">
+<h2>Outstanding questions<a class="headerlink" href="#outstanding-questions" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>How to deal with reddening in the training spectra</li>
+<li>Do we need only balmer lines or full cloudy models for the computation</li>
+<li>How do we define case A vs B in terms of the input parameters of cloudy</li>
+<li>What ML algorithm is suitable for this classification</li>
+<li>What method should be used for defining the Gaussianity of the Ha line</li>
+<li>Potentially include bootstrapping for determinations of uncertainties in predictions and mitigate noise effects. GAME paper suggests that including noise in the training set is also advantageous.</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Axel Runnholm.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

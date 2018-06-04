@@ -1,0 +1,12 @@
+
+*********************
+:mod:`classify`
+*********************
+
+Module containing functions that deal with getting and processing the SDSS spectra.
+
+.. automodule:: classify
+    :members:
+    :private-members:
+    :special-members:
+
