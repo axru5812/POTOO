@@ -4,6 +4,7 @@ import glob
 import pickle
 import sklearn
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.neural_network import MLPClassifier as Neural
 from sklearn.externals import joblib
 from sklearn.model_selection import KFold
 from os.path import isfile
@@ -105,9 +106,20 @@ def _add_single_noise(value):
     """
     Adds 10 percent gaussian noise to a number. Utility function for use in
     add_noise
+
+    Parameters
+    ----------
+    value : float
+        Value to which to add the noise
+
+    Returns
+    -------
+    noise : float
+        Value + 10% gaussian noise
     """
     number = np.random.normal(scale=0.1 * np.abs(value))
     return value + number
+
 
 def load_data(x_file, y_file, standardize=True,
               standardizer_file='./data/standardizer.pkl'):
@@ -169,6 +181,7 @@ def train_model(data, response, model=None):
     """
     if model is None:
         model = AdaBoostClassifier()
+        # model = Neural()
     resp = response.values.ravel()
     fitted_model = model.fit(data, resp)
     return fitted_model
@@ -191,6 +204,23 @@ def save_trained_model(model, filename):
 def cross_validate(data, response, model=None):
     """
     Run a k-fold cross validation on the model to assess predictive ability.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        The full training data set
+    response : pandas.DataFrame
+        The classes for the training set
+    model : sklearn model (optional)
+        Can be used  to specify another model to cross validate. Otherwise
+        defaults to AdaBoostClassifier
+
+    Returns
+    -------
+    scores : list
+        List of all 5 scores.
+    mean_score : float
+        Mean of scores
     """
     data = data.copy().values
     resp = response.copy().values
