@@ -64,3 +64,5 @@ temp/
 temp_old/
 
 SDSS_coords\.list
+
+errorlog
