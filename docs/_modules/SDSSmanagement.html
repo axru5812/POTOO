@@ -172,7 +172,56 @@
 <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="make_SDSS_idlist"><a class="viewcode-back" href="../Classificationscript.html#SDSSmanagement.make_SDSS_idlist">[docs]</a><span class="k">def</span> <span class="nf">make_SDSS_idlist</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">clobber</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="_log"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement._log">[docs]</a><span class="k">def</span> <span class="nf">_log</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple error logging function</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    message : str</span>
+<span class="sd">        message to be added to log file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;errorlog&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">message</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="should_download"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.should_download">[docs]</a><span class="k">def</span> <span class="nf">should_download</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if any spectra in the table need to be processed</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    table : astropy table</span>
+<span class="sd">        Chunk of spectra to check</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    download : bool</span>
+<span class="sd">        Whether or not to run processing at all</span>
+<span class="sd">    table : astropy table</span>
+<span class="sd">        Table with the objects that need processing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">download</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;mjd&#39;</span><span class="p">],</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;plate&#39;</span><span class="p">],</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;fiberID&#39;</span><span class="p">])</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">select</span><span class="p">]</span>
+    <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;./data/lines/&#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+
+    <span class="n">exists</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">name_list</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">exists</span><span class="p">)):</span>
+        <span class="n">download</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">_log</span><span class="p">(</span><span class="s1">&#39;All files exist. No download required&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">exists</span><span class="p">))])</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> files should be downloaded.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exists</span><span class="p">)</span>
+        <span class="n">_log</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">download</span><span class="p">,</span> <span class="n">table</span></div>
+
+
+<div class="viewcode-block" id="make_SDSS_idlist"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.make_SDSS_idlist">[docs]</a><span class="k">def</span> <span class="nf">make_SDSS_idlist</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">clobber</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a master file with quantities that provide unique identification in</span>
 <span class="sd">    the SDSS: ra, dec, mjd, plate number, and fiber ID.</span>
@@ -210,6 +259,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;File exists. Skipping query&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_log</span><span class="p">(</span><span class="s1">&#39;File </span><span class="si">{}</span><span class="s1"> exists. Skipping query&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39; SELECT s.ra, s.dec, s.mjd, s.plate, s.fiberID</span>
 <span class="s1">                    FROM SpecObjAll AS s</span>
@@ -221,7 +272,7 @@
         <span class="n">save_asc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="load_table"><a class="viewcode-back" href="../Classificationscript.html#SDSSmanagement.load_table">[docs]</a><span class="k">def</span> <span class="nf">load_table</span><span class="p">(</span><span class="n">listname</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="load_table"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.load_table">[docs]</a><span class="k">def</span> <span class="nf">load_table</span><span class="p">(</span><span class="n">listname</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Loads a section of the SDSS id list and removes it from the coordinate list</span>
 
@@ -257,7 +308,7 @@
     <span class="k">return</span> <span class="n">table</span><span class="p">,</span> <span class="n">remaining</span></div>
 
 
-<div class="viewcode-block" id="chunk_table"><a class="viewcode-back" href="../Classificationscript.html#SDSSmanagement.chunk_table">[docs]</a><span class="k">def</span> <span class="nf">chunk_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="chunk_table"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.chunk_table">[docs]</a><span class="k">def</span> <span class="nf">chunk_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Separates the table into multiprocessing chunks</span>
 
@@ -288,7 +339,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="download_spectra"><a class="viewcode-back" href="../Classificationscript.html#SDSSmanagement.download_spectra">[docs]</a><span class="k">def</span> <span class="nf">download_spectra</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">save_raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raw_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="download_spectra"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.download_spectra">[docs]</a><span class="k">def</span> <span class="nf">download_spectra</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">save_raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raw_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Downloads SDSS spectra</span>
 
@@ -329,10 +380,12 @@
             <span class="n">fits_object</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spectrum already saved. Skipping&#39;</span><span class="p">)</span>
+            <span class="n">_log</span><span class="p">(</span><span class="s1">&#39;Spectrum </span><span class="si">{}</span><span class="s1"> already saved. Skipping&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+
     <span class="k">return</span> <span class="n">spectra</span><span class="p">,</span> <span class="n">filenames</span></div>
 
 
-<div class="viewcode-block" id="process_spectra"><a class="viewcode-back" href="../Classificationscript.html#SDSSmanagement.process_spectra">[docs]</a><span class="k">def</span> <span class="nf">process_spectra</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">save_res</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="process_spectra"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.process_spectra">[docs]</a><span class="k">def</span> <span class="nf">process_spectra</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">save_res</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clobber</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Coordinates the measuring of lines and removal of continuum from sdss</span>
 <span class="sd">    spectra. The steps that are performed are:</span>
@@ -354,28 +407,35 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    objects : list</span>
-<span class="sd">        List of dataframes with measured line fluxes</span>
+<span class="sd">        List of dataframes with measured line fluxes. If all files have already</span>
+<span class="sd">        been created returns empty list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">spectrum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spectra</span><span class="p">):</span>
-        <span class="n">wavelength</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">unpack_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span>
-        <span class="n">nflux</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">flux</span><span class="p">)</span>
-        <span class="n">zwave</span> <span class="o">=</span> <span class="n">wavelength</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">measure_lines</span><span class="p">(</span><span class="n">wl</span><span class="o">=</span><span class="n">zwave</span><span class="p">,</span> <span class="n">flux</span><span class="o">=</span><span class="n">nflux</span> <span class="o">*</span> <span class="mf">1e-17</span><span class="p">,</span>
-                              <span class="n">linelist</span><span class="o">=</span><span class="s1">&#39;./data/lines.list&#39;</span><span class="p">)</span>
-        <span class="n">lum_dist</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-        <span class="n">lum_dist_cm</span> <span class="o">=</span> <span class="n">lum_dist</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="c1"># Check if the file exists first</span>
+        <span class="n">file_exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">save_name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_exists</span><span class="p">:</span>
+            <span class="n">_log</span><span class="p">(</span><span class="n">save_name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pkl exists. Skipping processing&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wavelength</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">unpack_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span>
+            <span class="n">nflux</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">flux</span><span class="p">)</span>
+            <span class="n">zwave</span> <span class="o">=</span> <span class="n">wavelength</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">measure_lines</span><span class="p">(</span><span class="n">wl</span><span class="o">=</span><span class="n">zwave</span><span class="p">,</span> <span class="n">flux</span><span class="o">=</span><span class="n">nflux</span> <span class="o">*</span> <span class="mf">1e-17</span><span class="p">,</span>
+                                  <span class="n">linelist</span><span class="o">=</span><span class="s1">&#39;./data/lines.list&#39;</span><span class="p">)</span>
+            <span class="n">lum_dist</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">lum_dist_cm</span> <span class="o">=</span> <span class="n">lum_dist</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
 
-        <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">flux</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">lum_dist_cm</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">save_res</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">save_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="c1"># Pickle the result</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">save_name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
-        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">flux</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">lum_dist_cm</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">save_res</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">save_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="c1"># Pickle the result</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">save_name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">objects</span></div>
 
 
-<div class="viewcode-block" id="unpack_spectrum"><a class="viewcode-back" href="../Classificationscript.html#SDSSmanagement.unpack_spectrum">[docs]</a><span class="k">def</span> <span class="nf">unpack_spectrum</span><span class="p">(</span><span class="n">HDU_list</span><span class="p">):</span>
+<div class="viewcode-block" id="unpack_spectrum"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.unpack_spectrum">[docs]</a><span class="k">def</span> <span class="nf">unpack_spectrum</span><span class="p">(</span><span class="n">HDU_list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unpacks and extracts the relevant parts of an SDSS HDU list object.</span>
 
@@ -400,7 +460,7 @@
     <span class="k">return</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">z</span></div>
 
 
-<div class="viewcode-block" id="normalize"><a class="viewcode-back" href="../Classificationscript.html#SDSSmanagement.normalize">[docs]</a><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">51</span><span class="p">):</span>
+<div class="viewcode-block" id="normalize"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.normalize">[docs]</a><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">51</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function that normalizes the input spectrum using median filtering</span>
 
@@ -425,7 +485,7 @@
     <span class="k">return</span> <span class="n">normalized_flux</span></div>
 
 
-<div class="viewcode-block" id="measure_lines"><a class="viewcode-back" href="../Classificationscript.html#SDSSmanagement.measure_lines">[docs]</a><span class="k">def</span> <span class="nf">measure_lines</span><span class="p">(</span><span class="n">wl</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">linelist</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;narrowband&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_lines"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.measure_lines">[docs]</a><span class="k">def</span> <span class="nf">measure_lines</span><span class="p">(</span><span class="n">wl</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">linelist</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;narrowband&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measures a set of emission lines to get fluxes that can be compared to</span>
 <span class="sd">    cloudy.</span>

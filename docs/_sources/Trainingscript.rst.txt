@@ -3,8 +3,6 @@
 :mod:`train`
 *********************
 
-Module containing functions that deal with getting and processing the SDSS spectra.
-
 .. automodule:: train
     :members:
     :private-members:

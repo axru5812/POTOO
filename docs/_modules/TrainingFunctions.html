@@ -161,6 +161,7 @@
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">sklearn</span>
 <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">AdaBoostClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="k">import</span> <span class="n">MLPClassifier</span> <span class="k">as</span> <span class="n">Neural</span>
 <span class="kn">from</span> <span class="nn">sklearn.externals</span> <span class="k">import</span> <span class="n">joblib</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">KFold</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">isfile</span>
@@ -262,9 +263,20 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adds 10 percent gaussian noise to a number. Utility function for use in</span>
 <span class="sd">    add_noise</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value : float</span>
+<span class="sd">        Value to which to add the noise</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    noise : float</span>
+<span class="sd">        Value + 10% gaussian noise</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">value</span> <span class="o">+</span> <span class="n">number</span></div>
+
 
 <div class="viewcode-block" id="load_data"><a class="viewcode-back" href="../Training.html#TrainingFunctions.load_data">[docs]</a><span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">x_file</span><span class="p">,</span> <span class="n">y_file</span><span class="p">,</span> <span class="n">standardize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
               <span class="n">standardizer_file</span><span class="o">=</span><span class="s1">&#39;./data/standardizer.pkl&#39;</span><span class="p">):</span>
@@ -326,6 +338,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">AdaBoostClassifier</span><span class="p">()</span>
+        <span class="c1"># model = Neural()</span>
     <span class="n">resp</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
     <span class="n">fitted_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">resp</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fitted_model</span></div>
@@ -348,6 +361,23 @@
 <div class="viewcode-block" id="cross_validate"><a class="viewcode-back" href="../Training.html#TrainingFunctions.cross_validate">[docs]</a><span class="k">def</span> <span class="nf">cross_validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run a k-fold cross validation on the model to assess predictive ability.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        The full training data set</span>
+<span class="sd">    response : pandas.DataFrame</span>
+<span class="sd">        The classes for the training set</span>
+<span class="sd">    model : sklearn model (optional)</span>
+<span class="sd">        Can be used  to specify another model to cross validate. Otherwise</span>
+<span class="sd">        defaults to AdaBoostClassifier</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scores : list</span>
+<span class="sd">        List of all 5 scores.</span>
+<span class="sd">    mean_score : float</span>
+<span class="sd">        Mean of scores</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
     <span class="n">resp</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>

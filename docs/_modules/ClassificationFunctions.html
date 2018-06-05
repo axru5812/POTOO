@@ -215,6 +215,7 @@
     <span class="k">if</span> <span class="n">standardize</span><span class="p">:</span>
         <span class="n">standardizer</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">standardizer_file</span><span class="p">)</span>
         <span class="n">new_data</span> <span class="o">=</span> <span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># new_data = standardizer.fit_transform(data)</span>
         <span class="n">data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
                                <span class="n">data</span><span class="o">=</span><span class="n">new_data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data_df</span>

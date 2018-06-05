@@ -166,6 +166,18 @@
 <code class="descclassname">TrainingFunctions.</code><code class="descname">_add_single_noise</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/TrainingFunctions.html#_add_single_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TrainingFunctions._add_single_noise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds 10 percent gaussian noise to a number. Utility function for use in
 add_noise</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>float</em>) &#8211; Value to which to add the noise</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>noise</strong> &#8211; Value + 10% gaussian noise</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -216,6 +228,27 @@ is then saved as a pickle. The same is done with the class values</p>
 <dt id="TrainingFunctions.cross_validate">
 <code class="descclassname">TrainingFunctions.</code><code class="descname">cross_validate</code><span class="sig-paren">(</span><em>data</em>, <em>response</em>, <em>model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/TrainingFunctions.html#cross_validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TrainingFunctions.cross_validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a k-fold cross validation on the model to assess predictive ability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>pandas.DataFrame</em>) &#8211; The full training data set</li>
+<li><strong>response</strong> (<em>pandas.DataFrame</em>) &#8211; The classes for the training set</li>
+<li><strong>model</strong> (<em>sklearn model</em><em> (</em><em>optional</em><em>)</em>) &#8211; Can be used  to specify another model to cross validate. Otherwise
+defaults to AdaBoostClassifier</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>scores</strong> (<em>list</em>) &#8211; List of all 5 scores.</li>
+<li><strong>mean_score</strong> (<em>float</em>) &#8211; Mean of scores</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
