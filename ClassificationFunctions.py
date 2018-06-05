@@ -58,6 +58,7 @@ def load_data(filename='./data/sdss_df.pkl', standardize=True,
     if standardize:
         standardizer = joblib.load(standardizer_file)
         new_data = standardizer.transform(data)
+        # new_data = standardizer.fit_transform(data)
         data_df = pd.DataFrame(columns=data.columns, index=data.index,
                                data=new_data)
         return data_df
