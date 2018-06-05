@@ -18,6 +18,10 @@ cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 def _log(message):
     """
     Simple error logging function
+    Parameters
+    ----------
+    message : str
+        message to be added to log file
     """
     filename = 'errorlog'
     with open(filename, 'a') as f:
@@ -26,6 +30,21 @@ def _log(message):
 
 
 def should_download(table):
+    """
+    Checks if any spectra in the table need to be processed
+
+    Parameters
+    ----------
+    table : astropy table
+        Chunk of spectra to check
+
+    Returns
+    -------
+    download : bool
+        Whether or not to run processing at all
+    table : astropy table
+        Table with the objects that need processing
+    """
     download = True
     select = zip(table['mjd'], table['plate'], table['fiberID'])
     names = [str(a) + '_' + str(b) + '_' + str(c) for a, b, c in select]
