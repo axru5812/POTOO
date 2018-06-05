@@ -15,6 +15,36 @@ import copy
 cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 
 
+def _log(message):
+    """
+    Simple error logging function
+    """
+    filename = 'errorlog'
+    with open(filename, 'a') as f:
+        line = message + '\n'
+        f.write(line)
+
+
+def should_download(table):
+    download = True
+    select = zip(table['mjd'], table['plate'], table['fiberID'])
+    names = [str(a) + '_' + str(b) + '_' + str(c) for a, b, c in select]
+    name_list = ['./data/lines/' + name + '.pkl' for name in names]
+
+    exists = [os.path.isfile(name) for name in name_list]
+
+    if np.all(np.array(exists)):
+        download = False
+        _log('All files exist. No download required')
+    else:
+        table = copy.deepcopy(table[np.where(~np.array(exists))])
+        msg = '{} files should be downloaded.'.format(len(table))
+        msg += '{}'.format(exists)
+        _log(msg)
+
+    return download, table
+
+
 def make_SDSS_idlist(filename, clobber=False, verbose=True):
     """
     Creates a master file with quantities that provide unique identification in
@@ -53,6 +83,8 @@ def make_SDSS_idlist(filename, clobber=False, verbose=True):
         else:
             if verbose:
                 print('File exists. Skipping query')
+            else:
+                _log('File {} exists. Skipping query'.format(filename))
     else:
         query = ''' SELECT s.ra, s.dec, s.mjd, s.plate, s.fiberID
                     FROM SpecObjAll AS s
@@ -172,10 +204,12 @@ def download_spectra(table, data_dir, save_raw=True, raw_dir=None):
             fits_object.writeto(filename)
         except OSError:
             print('Spectrum already saved. Skipping')
+            _log('Spectrum {} already saved. Skipping'.format(filename))
+
     return spectra, filenames
 
 
-def process_spectra(spectra, save_res=True, save_name=None):
+def process_spectra(spectra, save_res=True, save_name=None, clobber=False):
     """
     Coordinates the measuring of lines and removal of continuum from sdss
     spectra. The steps that are performed are:
@@ -197,24 +231,31 @@ def process_spectra(spectra, save_res=True, save_name=None):
     Returns
     -------
     objects : list
-        List of dataframes with measured line fluxes
+        List of dataframes with measured line fluxes. If all files have already
+        been created returns empty list.
     """
     objects = []
     for i, spectrum in enumerate(spectra):
-        wavelength, flux, z = unpack_spectrum(spectrum)
-        nflux = normalize(wavelength, flux)
-        zwave = wavelength / (1 + z)
-        lines = measure_lines(wl=zwave, flux=nflux * 1e-17,
-                              linelist='./data/lines.list')
-        lum_dist = cosmo.luminosity_distance(z)
-        lum_dist_cm = lum_dist.to(u.cm).value
+        # Check if the file exists first
+        file_exists = os.path.isfile(save_name[i] + '.pkl')
+        if file_exists:
+            _log(save_name[i] + '.pkl exists. Skipping processing')
+        else:
+            wavelength, flux, z = unpack_spectrum(spectrum)
+            nflux = normalize(wavelength, flux)
+            zwave = wavelength / (1 + z)
+            lines = measure_lines(wl=zwave, flux=nflux * 1e-17,
+                                  linelist='./data/lines.list')
+            lum_dist = cosmo.luminosity_distance(z)
+            lum_dist_cm = lum_dist.to(u.cm).value
 
-        lines['flux'] = lines.flux * (4 * np.pi * lum_dist_cm**2)
-        if save_res:
-            assert save_name is not None
-            # Pickle the result
-            lines.to_pickle(save_name[i] + '.pkl')
-        objects.append(lines)
+            lines['flux'] = lines.flux * (4 * np.pi * lum_dist_cm**2)
+            if save_res:
+                assert save_name is not None
+                # Pickle the result
+                lines.to_pickle(save_name[i] + '.pkl')
+            objects.append(lines)
+
     return objects
 
 

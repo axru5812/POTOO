@@ -24,6 +24,7 @@ import sys
 import warnings
 import shutil
 
+
 def main():
     # Create SDSS list
     sdss.make_SDSS_idlist(filename='SDSS_coords.list', clobber=False)
@@ -43,14 +44,17 @@ def main():
 
 def multidownload(tab):
     try:
-        # Download spectra
-        spectra, names = sdss.download_spectra(tab, 'results')
+        download, tab = sdss.should_download(tab)
+        if download:
+            # Download spectra
+            spectra, names = sdss.download_spectra(tab, 'results')
 
-        # Process spectra
-        namelist = ['./data/lines/' + name for name in names]
-        lines = sdss.process_spectra(spectra, save_name=namelist)
+            # Process spectra
+            namelist = ['./data/lines/' + name for name in names]
+            lines = sdss.process_spectra(spectra, save_name=namelist)
     except Exception as e:
-        warnings.warn('The following errors occured:\n' + str(e))
+        sdss._log('Error:' + str(e))
+        # warnings.warn('The following errors occured:\n' + str(e))
         try:
             shutil.rmtree('/home/axel/.astropy/cache/download/py3/lock')
         except FileNotFoundError:
@@ -63,7 +67,7 @@ def mute():
 
 if __name__ == '__main__':
     print('Making ID list')
-    sdss.make_SDSS_idlist(filename='SDSS_coords.list', clobber=True,
+    sdss.make_SDSS_idlist(filename='SDSS_coords.list', clobber=False,
                           verbose=False)
     tab = sdss.load_table('SDSS_coords.list', all=True)
     print('Identified {} galaxies'.format(len(tab)))
