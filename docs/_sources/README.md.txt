@@ -1,5 +1,4 @@
-# POTOO
-![Potoo logo](https://github.com/axru5812/POTOO/blob/master/POTOO_big_logo.png)
+![Potoo logo](../POTOO/POTOO_big_logo.png)
 
 **Properties of line Transitions in non-Ordinary Objects**
 
@@ -7,7 +6,7 @@
 
 -------------------------------------------------------------------------------
 
-## INVESTIGATING UNPHYSICAL Ha/Hb RATIOS
+## Investigating unphysical Ha/Hb ratios
 
 ### General motivation ###
 

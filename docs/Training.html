@@ -1,0 +1,398 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TrainingFunctions &mdash; POTOO 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ClassificationFunctions" href="Classification.html" />
+    <link rel="prev" title="SDSSmanagement" href="SDSS.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> POTOO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="SDSS.html"><code class="docutils literal"><span class="pre">SDSSmanagement</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">TrainingFunctions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Classification.html"><code class="docutils literal"><span class="pre">ClassificationFunctions</span></code></a></li>
+</ul>
+<p class="caption"><span class="caption-text">Scripts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="SDSSscript.html"><code class="docutils literal"><span class="pre">PreprocessSDSS</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainingscript.html"><code class="docutils literal"><span class="pre">train</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Classificationscript.html"><code class="docutils literal"><span class="pre">classify</span></code></a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">POTOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li><code class="docutils literal"><span class="pre">TrainingFunctions</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Training.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="trainingfunctions">
+<h1><a class="reference internal" href="#module-TrainingFunctions" title="TrainingFunctions"><code class="xref py py-mod docutils literal"><span class="pre">TrainingFunctions</span></code></a><a class="headerlink" href="#trainingfunctions" title="Permalink to this headline">¶</a></h1>
+<p>Module with functions related to training the sklearn ML model.</p>
+<span class="target" id="module-TrainingFunctions"></span><dl class="function">
+<dt id="TrainingFunctions._add_single_noise">
+<code class="descclassname">TrainingFunctions.</code><code class="descname">_add_single_noise</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/TrainingFunctions.html#_add_single_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TrainingFunctions._add_single_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds 10 percent gaussian noise to a number. Utility function for use in
+add_noise</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>float</em>) &#8211; Value to which to add the noise</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>noise</strong> &#8211; Value + 10% gaussian noise</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="TrainingFunctions.add_noise">
+<code class="descclassname">TrainingFunctions.</code><code class="descname">add_noise</code><span class="sig-paren">(</span><em>datafile</em>, <em>responsefile</em>, <em>overwrite=True</em>, <em>save_x=None</em>, <em>save_y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/TrainingFunctions.html#add_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TrainingFunctions.add_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a gaussian noise component to the cloudy modelruns, effectively
+doubling the training set. Saves the resulting dfs as pickles</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>datafile</strong> (<em>str</em>) &#8211; file containing the main dataset pickle</li>
+<li><strong>responsefile</strong> (<em>str</em>) &#8211; file containing the y classes</li>
+<li><strong>overwrite</strong> (<em>bool</em>) &#8211; whether to overwrite the old files</li>
+<li><strong>save_x</strong> (<em>str</em>) &#8211; If overwrite is false, this specifies the savelocation of the data</li>
+<li><strong>save_y</strong> (<em>str</em>) &#8211; If overwrite is false, this specifies the savelocation of the responses</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="TrainingFunctions.compile_training_set">
+<code class="descclassname">TrainingFunctions.</code><code class="descname">compile_training_set</code><span class="sig-paren">(</span><em>data_dir</em>, <em>save_file_int</em>, <em>save_file_class</em>, <em>clobber=False</em>, <em>linelist='./data/linelabels'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/TrainingFunctions.html#compile_training_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TrainingFunctions.compile_training_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a data-frame containing the line flux values. The resulting DF
+is then saved as a pickle. The same is done with the class values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data_dir</strong> (<em>str</em>) &#8211; Directory from which to fetch the cloudy savefiles</li>
+<li><strong>save_file_int</strong> (<em>str</em>) &#8211; Name of the file to which to save the pickled dataframe</li>
+<li><strong>save_file_class</strong> (<em>str</em>) &#8211; Name of the file to which to save the classlabel dataframe</li>
+<li><strong>linelist</strong> (<em>str</em>) &#8211; Path to the list containing the linelabels. Defaults to
+&#8216;./data/linelabels&#8217;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="TrainingFunctions.cross_validate">
+<code class="descclassname">TrainingFunctions.</code><code class="descname">cross_validate</code><span class="sig-paren">(</span><em>data</em>, <em>response</em>, <em>model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/TrainingFunctions.html#cross_validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TrainingFunctions.cross_validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a k-fold cross validation on the model to assess predictive ability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>pandas.DataFrame</em>) &#8211; The full training data set</li>
+<li><strong>response</strong> (<em>pandas.DataFrame</em>) &#8211; The classes for the training set</li>
+<li><strong>model</strong> (<em>sklearn model</em><em> (</em><em>optional</em><em>)</em>) &#8211; Can be used  to specify another model to cross validate. Otherwise
+defaults to AdaBoostClassifier</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>scores</strong> (<em>list</em>) &#8211; List of all 5 scores.</li>
+<li><strong>mean_score</strong> (<em>float</em>) &#8211; Mean of scores</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="TrainingFunctions.load_data">
+<code class="descclassname">TrainingFunctions.</code><code class="descname">load_data</code><span class="sig-paren">(</span><em>x_file</em>, <em>y_file</em>, <em>standardize=True</em>, <em>standardizer_file='./data/standardizer.pkl'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/TrainingFunctions.html#load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TrainingFunctions.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads and returns the data. If standardize is True (default) it
+standardizes the data and persists the standard scaler object for use on
+the actual dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_file</strong> (<em>str</em>) &#8211; Name of the pickle containing the training data set.</li>
+<li><strong>y_file</strong> (<em>str</em>) &#8211; Name of the pickle containing the training classes.</li>
+<li><strong>standardize</strong> (<em>bool</em>) &#8211; Whether or not to standardize the data</li>
+<li><strong>standardizer_file</strong> (<em>str</em>) &#8211; Name of file in which to persist the data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>x_df</strong> (<em>pandas.DataFrame</em>) &#8211; training data set</li>
+<li><strong>y_df</strong> (<em>pandas.DataFrame</em>) &#8211; training classes</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="TrainingFunctions.save_trained_model">
+<code class="descclassname">TrainingFunctions.</code><code class="descname">save_trained_model</code><span class="sig-paren">(</span><em>model</em>, <em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/TrainingFunctions.html#save_trained_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TrainingFunctions.save_trained_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pickles the trained model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> (<em>sklearn model object</em>) &#8211; Trained model object</li>
+<li><strong>file_name</strong> (<em>str</em>) &#8211; Name of the file to which to save the pickled model</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="TrainingFunctions.train_model">
+<code class="descclassname">TrainingFunctions.</code><code class="descname">train_model</code><span class="sig-paren">(</span><em>data</em>, <em>response</em>, <em>model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/TrainingFunctions.html#train_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#TrainingFunctions.train_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trains the selected model on the full data set</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>pandas.DataFrame</em>) &#8211; Dataframe with all the measured line fluxes from CLoudy</li>
+<li><strong>response</strong> (<em>pandas.DataFrame</em>) &#8211; Classes from Cloudy column density</li>
+<li><strong>model</strong> (<em>sklearn model object</em><em>, </em><em>optional</em>) &#8211; An instance of an sklearn classifier. If not specified the function
+defaults to an AdaBoostClassifier</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>model</strong> &#8211; Returns the trained model</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">sklearn model object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Classification.html" class="btn btn-neutral float-right" title="ClassificationFunctions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="SDSS.html" class="btn btn-neutral" title="SDSSmanagement" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Axel Runnholm.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

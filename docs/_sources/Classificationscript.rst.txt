@@ -1,0 +1,10 @@
+
+*********************
+:mod:`classify`
+*********************
+
+.. automodule:: classify
+    :members:
+    :private-members:
+    :special-members:
+

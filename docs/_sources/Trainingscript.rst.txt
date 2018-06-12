@@ -1,0 +1,10 @@
+
+*********************
+:mod:`train`
+*********************
+
+.. automodule:: train
+    :members:
+    :private-members:
+    :special-members:
+

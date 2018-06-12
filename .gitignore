@@ -56,3 +56,13 @@ docs/_build/
 
 # PyBuilder
 target/
+
+data/
+
+temp/
+
+temp_old/
+
+SDSS_coords\.list
+
+errorlog

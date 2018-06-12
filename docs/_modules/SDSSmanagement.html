@@ -1,0 +1,598 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SDSSmanagement &mdash; POTOO 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> POTOO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../SDSS.html"><code class="docutils literal"><span class="pre">SDSSmanagement</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Training.html"><code class="docutils literal"><span class="pre">TrainingFunctions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Classification.html"><code class="docutils literal"><span class="pre">ClassificationFunctions</span></code></a></li>
+</ul>
+<p class="caption"><span class="caption-text">Scripts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../SDSSscript.html"><code class="docutils literal"><span class="pre">PreprocessSDSS</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Trainingscript.html"><code class="docutils literal"><span class="pre">train</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Classificationscript.html"><code class="docutils literal"><span class="pre">classify</span></code></a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">POTOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>SDSSmanagement</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for SDSSmanagement</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astroquery.sdss</span> <span class="k">import</span> <span class="n">SDSS</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="k">import</span> <span class="n">coordinates</span> <span class="k">as</span> <span class="n">coords</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="k">import</span> <span class="n">table</span>
+<span class="kn">from</span> <span class="nn">astropy.io</span> <span class="k">import</span> <span class="n">ascii</span> <span class="k">as</span> <span class="n">save_asc</span>
+<span class="kn">from</span> <span class="nn">astropy.io</span> <span class="k">import</span> <span class="n">fits</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="k">import</span> <span class="n">FlatLambdaCDM</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="_log"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement._log">[docs]</a><span class="k">def</span> <span class="nf">_log</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple error logging function</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    message : str</span>
+<span class="sd">        message to be added to log file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;errorlog&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">message</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="should_download"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.should_download">[docs]</a><span class="k">def</span> <span class="nf">should_download</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if any spectra in the table need to be processed</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    table : astropy table</span>
+<span class="sd">        Chunk of spectra to check</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    download : bool</span>
+<span class="sd">        Whether or not to run processing at all</span>
+<span class="sd">    table : astropy table</span>
+<span class="sd">        Table with the objects that need processing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">download</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">select</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;mjd&#39;</span><span class="p">],</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;plate&#39;</span><span class="p">],</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;fiberID&#39;</span><span class="p">])</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">select</span><span class="p">]</span>
+    <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;./data/lines/&#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+
+    <span class="n">exists</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">name_list</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">exists</span><span class="p">)):</span>
+        <span class="n">download</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">_log</span><span class="p">(</span><span class="s1">&#39;All files exist. No download required&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">exists</span><span class="p">))])</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> files should be downloaded.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exists</span><span class="p">)</span>
+        <span class="n">_log</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">download</span><span class="p">,</span> <span class="n">table</span></div>
+
+
+<div class="viewcode-block" id="make_SDSS_idlist"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.make_SDSS_idlist">[docs]</a><span class="k">def</span> <span class="nf">make_SDSS_idlist</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">clobber</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a master file with quantities that provide unique identification in</span>
+<span class="sd">    the SDSS: ra, dec, mjd, plate number, and fiber ID.</span>
+<span class="sd">    The spectra are selected to be galaxies and classified as starbursts</span>
+<span class="sd">    =&gt; EW(Ha) &gt; 50 Å.</span>
+<span class="sd">    This can then be used to get the corresponding spectra in chunks at a</span>
+<span class="sd">    later stage.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Name of the savefile</span>
+<span class="sd">    clobber : bool</span>
+<span class="sd">        Whether to remake the list file</span>
+<span class="sd">    verbose : bool</span>
+<span class="sd">        Sets print level.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ------</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Saves a list of interesting SDSS id&#39;s for all galaxies with spectra</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">clobber</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39; SELECT s.ra, s.dec, s.mjd, s.plate, s.fiberID</span>
+<span class="s1">                        FROM  PhotoObjAll AS p JOIN SpecObjAll s ON p.objID = s.bestObjID</span>
+<span class="s1">                        WHERE s.class=&#39;GALAXY&#39; AND s.subclass=&#39;STARBURST&#39;</span>
+<span class="s1">                    &#39;&#39;&#39;</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">SDSS</span><span class="o">.</span><span class="n">query_sql</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">data_release</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+            <span class="n">save_asc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;File exists. Skipping query&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_log</span><span class="p">(</span><span class="s1">&#39;File </span><span class="si">{}</span><span class="s1"> exists. Skipping query&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39; SELECT s.ra, s.dec, s.mjd, s.plate, s.fiberID</span>
+<span class="s1">                    FROM SpecObjAll AS s</span>
+<span class="s1">                    WHERE s.class=&#39;GALAXY&#39; AND s.subclass=&#39;STARBURST&#39;</span>
+<span class="s1">                &#39;&#39;&#39;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">SDSS</span><span class="o">.</span><span class="n">query_sql</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">data_release</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="n">save_asc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_table"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.load_table">[docs]</a><span class="k">def</span> <span class="nf">load_table</span><span class="p">(</span><span class="n">listname</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads a section of the SDSS id list and removes it from the coordinate list</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    listname : str</span>
+<span class="sd">        Name of the file to load from</span>
+<span class="sd">    length : int</span>
+<span class="sd">        Length of chunk to return</span>
+<span class="sd">    all : bool</span>
+<span class="sd">        If true returns the full list</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    table : pandas.DataFrame</span>
+<span class="sd">        DataFrame with the information needed by SDSS.get_spectra.</span>
+<span class="sd">    remaining : int</span>
+<span class="sd">        Remaining rows in list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">save_asc</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">listname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">res</span><span class="p">[:</span><span class="n">length</span><span class="p">]</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="n">length</span><span class="p">:]</span>
+        <span class="n">save_asc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">listname</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">remaining</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">res</span>
+        <span class="n">remaining</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">table</span><span class="p">,</span> <span class="n">remaining</span></div>
+
+
+<div class="viewcode-block" id="chunk_table"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.chunk_table">[docs]</a><span class="k">def</span> <span class="nf">chunk_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Separates the table into multiprocessing chunks</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    table : astropy.table</span>
+<span class="sd">        Full table object</span>
+<span class="sd">    chunksize : int, optional</span>
+<span class="sd">        Default size of chunks is 10</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : list</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">remaining</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">table</span><span class="p">[:</span><span class="n">chunksize</span><span class="p">])</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">chunksize</span><span class="p">:]</span>
+            <span class="c1"># save_asc.write(table, listname, overwrite=True)</span>
+            <span class="n">remaining</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+            <span class="n">remaining</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="download_spectra"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.download_spectra">[docs]</a><span class="k">def</span> <span class="nf">download_spectra</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">save_raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raw_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Downloads SDSS spectra</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    table : AstroPy.Table</span>
+<span class="sd">        Table with coordinates</span>
+<span class="sd">    data_dir : str</span>
+<span class="sd">        Specifies directory where the data is saved</span>
+<span class="sd">    save_raw : bool</span>
+<span class="sd">        Specifies whether the raw spectra (i.e. sdss fits) should be saved</span>
+<span class="sd">    raw_dir : str, optional</span>
+<span class="sd">        Specifies save directory for the raw spectra. If raw_dir=None and</span>
+<span class="sd">        save_raw is True it defaults to data_dir</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spectra : list</span>
+<span class="sd">        List of HDU objects</span>
+<span class="sd">    filenames : list</span>
+<span class="sd">        List of filenames to be used when saving linemeasurements</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">select</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;mjd&#39;</span><span class="p">],</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;plate&#39;</span><span class="p">],</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;fiberID&#39;</span><span class="p">])</span>
+    <span class="n">spectra</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">filenames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">mjd</span><span class="p">,</span> <span class="n">plate</span><span class="p">,</span> <span class="n">fiberID</span> <span class="ow">in</span> <span class="n">select</span><span class="p">:</span>
+        <span class="c1"># Get the spectrum from the SDSS</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">SDSS</span><span class="o">.</span><span class="n">get_spectra_async</span><span class="p">(</span><span class="n">mjd</span><span class="o">=</span><span class="n">mjd</span><span class="p">,</span> <span class="n">plate</span><span class="o">=</span><span class="n">plate</span><span class="p">,</span> <span class="n">fiberID</span><span class="o">=</span><span class="n">fiberID</span><span class="p">)</span>
+
+        <span class="c1"># Load the HDU object</span>
+        <span class="n">fits_object</span> <span class="o">=</span> <span class="n">spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_fits</span><span class="p">()</span>
+        <span class="n">spectra</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fits_object</span><span class="p">)</span>
+
+        <span class="c1"># Save it to file</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;./temp/</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">.fits&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mjd</span><span class="p">,</span> <span class="n">plate</span><span class="p">,</span> <span class="n">fiberID</span><span class="p">)</span>
+        <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mjd</span><span class="p">,</span> <span class="n">plate</span><span class="p">,</span> <span class="n">fiberID</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fits_object</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spectrum already saved. Skipping&#39;</span><span class="p">)</span>
+            <span class="n">_log</span><span class="p">(</span><span class="s1">&#39;Spectrum </span><span class="si">{}</span><span class="s1"> already saved. Skipping&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">spectra</span><span class="p">,</span> <span class="n">filenames</span></div>
+
+
+<div class="viewcode-block" id="process_spectra"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.process_spectra">[docs]</a><span class="k">def</span> <span class="nf">process_spectra</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">save_res</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clobber</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinates the measuring of lines and removal of continuum from sdss</span>
+<span class="sd">    spectra. The steps that are performed are:</span>
+
+<span class="sd">    - Unpacking the spectrum</span>
+<span class="sd">    - Redshifting</span>
+<span class="sd">    - Continuum subtraction</span>
+<span class="sd">    - Line measuring</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectra : list</span>
+<span class="sd">        List of HDU objects conforming to the SDSS standard</span>
+<span class="sd">    save_res : bool</span>
+<span class="sd">        Whether or not to save the individual dataframes</span>
+<span class="sd">    save_dir : str</span>
+<span class="sd">        Filenames where the dataframe pickles will be saved</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    objects : list</span>
+<span class="sd">        List of dataframes with measured line fluxes. If all files have already</span>
+<span class="sd">        been created returns empty list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">spectrum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spectra</span><span class="p">):</span>
+        <span class="c1"># Check if the file exists first</span>
+        <span class="n">file_exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">save_name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_exists</span><span class="p">:</span>
+            <span class="n">_log</span><span class="p">(</span><span class="n">save_name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pkl exists. Skipping processing&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wavelength</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">unpack_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span>
+            <span class="n">nflux</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">flux</span><span class="p">)</span>
+            <span class="n">zwave</span> <span class="o">=</span> <span class="n">wavelength</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">measure_lines</span><span class="p">(</span><span class="n">wl</span><span class="o">=</span><span class="n">zwave</span><span class="p">,</span> <span class="n">flux</span><span class="o">=</span><span class="n">nflux</span> <span class="o">*</span> <span class="mf">1e-17</span><span class="p">,</span>
+                                  <span class="n">linelist</span><span class="o">=</span><span class="s1">&#39;./data/lines.list&#39;</span><span class="p">)</span>
+            <span class="n">lum_dist</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">lum_dist_cm</span> <span class="o">=</span> <span class="n">lum_dist</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">flux</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">lum_dist_cm</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">save_res</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">save_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="c1"># Pickle the result</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">save_name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">objects</span></div>
+
+
+<div class="viewcode-block" id="unpack_spectrum"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.unpack_spectrum">[docs]</a><span class="k">def</span> <span class="nf">unpack_spectrum</span><span class="p">(</span><span class="n">HDU_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpacks and extracts the relevant parts of an SDSS HDU list object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    HDU_list : astropy HDUlist object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    wavelengths : ndarray</span>
+<span class="sd">        Wavelength array</span>
+<span class="sd">    flux : ndarray</span>
+<span class="sd">        Flux array</span>
+<span class="sd">    z : float</span>
+<span class="sd">        Redshift of the galaxy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">table_data</span> <span class="o">=</span> <span class="n">HDU_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">HDU_list</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">63</span><span class="p">]</span>
+    <span class="n">wavelengths</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">HDU_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;loglam&#39;</span><span class="p">]</span>
+    <span class="n">flux</span> <span class="o">=</span> <span class="n">HDU_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">z</span></div>
+
+
+<div class="viewcode-block" id="normalize"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.normalize">[docs]</a><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">51</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that normalizes the input spectrum using median filtering</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    wavelength : ndarray</span>
+<span class="sd">        Array of wavelengths in Ångström</span>
+<span class="sd">    flux : ndarray</span>
+<span class="sd">        Array of same length as wavelength. Units should be erg/s/Å</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    normalized_flux : ndarray</span>
+<span class="sd">        Normalized flux array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">continuum</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">medfilt</span><span class="p">(</span><span class="n">flux</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="n">normalized_flux</span> <span class="o">=</span> <span class="n">flux</span> <span class="o">-</span> <span class="n">continuum</span>
+
+    <span class="c1"># plt.figure()</span>
+    <span class="c1"># plt.plot(wavelength, normalized_flux)</span>
+    <span class="c1"># plt.show()</span>
+    <span class="k">return</span> <span class="n">normalized_flux</span></div>
+
+
+<div class="viewcode-block" id="measure_lines"><a class="viewcode-back" href="../SDSS.html#SDSSmanagement.measure_lines">[docs]</a><span class="k">def</span> <span class="nf">measure_lines</span><span class="p">(</span><span class="n">wl</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">linelist</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;narrowband&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measures a set of emission lines to get fluxes that can be compared to</span>
+<span class="sd">    cloudy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    wl : ndarray</span>
+<span class="sd">        Array of wavelengths in Ångström</span>
+<span class="sd">    flux : ndarray</span>
+<span class="sd">        Continuum_subtracted flux. Array of same length as wavelength.</span>
+<span class="sd">        Units should be erg/s/Å</span>
+<span class="sd">    linelist : str</span>
+<span class="sd">        List with line names and wavelengths. Tab separated</span>
+<span class="sd">    method : {&#39;narrowband&#39;, &#39;gaussian&#39;}</span>
+<span class="sd">        Selects the fitting method. Narrowband integrates the continuum</span>
+<span class="sd">        subtracted spectrum over a small box around each line to get the line</span>
+<span class="sd">        flux. Gaussian fits a set of gaussians to all the requested lines</span>
+<span class="sd">    width : int</span>
+<span class="sd">        Width of the narrowband.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    results : pandas.DataFrame</span>
+<span class="sd">        Dataframe with two columns: &#39;name&#39;, and &#39;flux&#39; as measured from the</span>
+<span class="sd">        spectrum</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Read in the lines we are interested in</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">linelist</span><span class="p">,</span> <span class="n">delim_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;wavelength&#39;</span><span class="p">])</span>
+    <span class="c1"># Create windows</span>
+    <span class="n">lower_edge</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">-</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">upper_edge</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">+</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="c1"># Loop over the windows</span>
+    <span class="n">fluxes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">le</span><span class="p">,</span> <span class="n">ue</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lower_edge</span><span class="p">,</span> <span class="n">upper_edge</span><span class="p">):</span>
+        <span class="c1"># Select spectral region</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">wl</span> <span class="o">&gt;=</span> <span class="n">le</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">wl</span> <span class="o">&lt;=</span> <span class="n">ue</span><span class="p">))</span>
+        <span class="c1"># Integrate the region</span>
+        <span class="n">flux_sum</span> <span class="o">=</span> <span class="n">flux</span><span class="p">[</span><span class="n">select</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="c1"># print(flux[select])</span>
+        <span class="n">fluxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux_sum</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">results</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">results</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fluxes</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Axel Runnholm.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
